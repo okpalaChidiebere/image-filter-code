@@ -1,8 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { IndexRouter } from './controllers/index.router';
+import { sequelize } from './sequelize';
+import { MODELS } from './controllers/model.index';
 
 (async () => {
+
+  await sequelize.addModels(MODELS);
+  await sequelize.sync();
 
   // Init the Express application
   const app = express();
