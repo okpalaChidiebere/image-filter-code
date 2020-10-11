@@ -1,3 +1,3 @@
-import {ImageF} from './images/models/Image';
+import {Image} from './images/models/Image';
 
-export const MODELS = [ImageF];
+export const MODELS = [Image];

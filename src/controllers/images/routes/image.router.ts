@@ -1,7 +1,7 @@
-import {filterImageFromURL, deleteLocalFiles} from '../../../util/util';
+import {filterImageFromURL, deleteLocalFiles, uploadImageToS3Bucket} from '../../../util/util';
 import { Router, Request, Response } from 'express';
-import { ImageF } from '../../images/models/Image';
-//import * as AWS from '../../../aws';
+import { Image } from '../../images/models/Image';
+import * as AWS from '../../../aws';
 //import {v4 as uuid } from 'uuid';
   
 const router: Router = Router();
@@ -34,41 +34,34 @@ router.get("/filteredimage", async(req: Request, res: Response) =>{
     }
 
     try {
-      console.log(image_url);
       const filtered_url = await filterImageFromURL(image_url);
-      //const imgKey = await uploadImageToS3Bucket(filtered_url);
-      //const imgBuffer = await getImageBuffer(image_url);
+      const imgKey = await uploadImageToS3Bucket(filtered_url);
       //const imgKey = `${uuid()}.jpg`; //eg: e47d4bf9-1fd1-4617-872f-ddac9f7f9084.jpg
-      
-      //res.status(200).sendFile(filtered_url, () => {deleteLocalFiles([filtered_url]);});
-      deleteLocalFiles([filtered_url]);
-      //console.log(imgKey);
-      const imgParam = {
-        url:  'tempKey.jpg'
-      };
-      const item = new ImageF(imgParam);
-      console.log(item.url);
-      //const saved_item = await item.save();
-      
-      //saved_item.url = AWS.getGetSignedUrl(saved_item.url);
-      res.status(200).send(imgParam.url);
-      //deleteLocalFiles([filtered_url]);
+    
+      const item = await new Image({
+         url : imgKey
+      });
+      const saved_item = await item.save(); //save the new image object to database
+      console.log(saved_item);
+      res.status(200).sendFile(filtered_url, () => {deleteLocalFiles([filtered_url]);});
     }
     catch (e) {
       res.status(400).send(e);
     }
     return;
 });
+//! END @TODO1 
 
-//! END @TODO1
 
-router.get("/test", async(req: Request, res: Response) =>{
-
-  const item = await new ImageF({
-    url : "tempKey.jpg"
+// Get all filtered images that was synched
+router.get('/images', async (req: Request, res: Response) => {
+  const items = await Image.findAndCountAll({order: [['id', 'DESC']]});
+  items.rows.map((item) => {
+          if(item.url) {
+              item.url = AWS.getGetSignedUrl(item.url);
+          }
   });
-
-  res.status(200).send(item);
+  res.send(items);
 });
 
 export const ImageRouter: Router = router;
