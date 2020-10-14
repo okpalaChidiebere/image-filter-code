@@ -1,4 +1,4 @@
-import {filterImageFromURL, deleteLocalFiles, uploadImageToS3Bucket} from '../../../util/util';
+import {filterImageFromURL, deleteLocalFiles, uploadImageToS3Bucket, generateJWT, requireAuth} from '../../../util/util';
 import { Router, Request, Response } from 'express';
 import { Image } from '../../images/models/Image';
 import * as AWS from '../../../aws';
@@ -21,7 +21,7 @@ const router: Router = Router();
 //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
 /**************************************************************************** */
-router.get("/filteredimage", async(req: Request, res: Response) =>{
+router.get("/filteredimage", requireAuth, async(req: Request, res: Response) =>{
     
     type MyQuery = {
       image_url: string;
@@ -62,6 +62,14 @@ router.get('/images', async (req: Request, res: Response) => {
           }
   });
   res.send(items);
+});
+
+router.get('/generateauthtoken', async (req: Request, res: Response) => {
+  const item_for_auth = {
+    generalAuthID: 'e47d4bf9-1fd1-4617-872f-ddac9f7f9084'
+};;
+  const jwt_token = generateJWT(item_for_auth);
+  res.send(jwt_token);
 });
 
 export const ImageRouter: Router = router;

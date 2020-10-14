@@ -16,3 +16,7 @@ export class Image extends Model<Image>{
 
 }
 
+export type Auth = {
+    generalAuthID: string;
+};
+
