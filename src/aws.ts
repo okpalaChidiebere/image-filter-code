@@ -4,8 +4,10 @@ import { config } from './config/config';
 const c = config.dev;
 
 //Configure AWS
+if(c.aws_profile !== "DEPLOYED") { // i added the if block so that if our code is deployed we will not be accessing the local configuration for our profile. Instead we will use the IAM role for our server to access that permission through the IAM system
 var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
 AWS.config.credentials = credentials;
+}
 
 export const s3 = new AWS.S3({
   signatureVersion: 'v4',

@@ -2,12 +2,12 @@
   "name": "image-filter-code",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "node www/server.js",
+    "start": "node server.js",
     "clean": "rm -rf www/ || true",
-    "build": "npm run clean && tsc && cp package.json www/package.json && mkdir www/tmp/ && cd www && zip -r Archive.zip . && cd ..",
+    "build": "npm run clean && tsc && cp package.json www/package.json && cd www && mkdir tmp && zip -r Archive.zip . && cd ..",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
