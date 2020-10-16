@@ -21,6 +21,7 @@ export const s3 = new AWS.S3({
  *    key: string - the filename to be put into the s3 bucket
  * @Returns:
  *    a url as a string
+ * 
  */
 export function getGetSignedUrl( key: string ): string{
 
