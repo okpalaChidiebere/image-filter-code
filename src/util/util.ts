@@ -2,7 +2,7 @@ import fs from 'fs';
 import Jimp = require('jimp');
 var Path = require('path');
 import Axios from 'axios';
-import * as AWS from '../../src/aws';
+import * as AWS from './../aws';
 import * as jwt from 'jsonwebtoken';
 import { NextFunction } from 'connect';
 import { Request, Response } from 'express';
